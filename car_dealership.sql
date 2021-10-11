@@ -130,7 +130,9 @@ CREATE TABLE car_service(
 
 INSERT INTO car_service(customer_id, vin_number, mechanic_id, description, payment_amount, part_id, quantity_used)
 VALUES
-	((SELECT customer_id FROM customers WHERE customer_id = 1), 'F76S9866EC78D89',(SELECT mechanic_id FROM mechanic WHERE mechanic_id = 4), 'put in new spark plugs', 98.65,(SELECT part_id FROM parts WHERE part_id = 2), 2);
+	((SELECT customer_id FROM customers WHERE customer_id = 2), 'F76S9866EC78D89',(SELECT mechanic_id FROM mechanic WHERE mechanic_id = 4), 'put in new spark plugs and engine tune-up', 125.50,(SELECT part_id FROM parts WHERE part_id = 2), 2);
+	((SELECT customer_id FROM customers WHERE customer_id = 3), 'F76S9866EC78D89',(SELECT mechanic_id FROM mechanic WHERE mechanic_id = 3), 'put in new spark plugs', 98.65,(SELECT part_id FROM parts WHERE part_id = 2), 1),
+	((SELECT customer_id FROM customers WHERE customer_id = 1), 'F76S9866EC78D89',(SELECT mechanic_id FROM mechanic WHERE mechanic_id = 4), 'put in new spark plugs', 98.65,(SELECT part_id FROM parts WHERE part_id = 2), 2),
 	((SELECT customer_id FROM customers WHERE customer_id = 2), 'F87G67F563K24L3',(SELECT mechanic_id FROM mechanic WHERE mechanic_id = 4), 'put in new spark plugs', 98.65,(SELECT part_id FROM parts WHERE part_id = 2), 2),
 	((SELECT customer_id FROM customers WHERE customer_id = 3), 'F78H238K76J1259',(SELECT mechanic_id FROM mechanic WHERE mechanic_id = 2), 'put in a new battery', 155.55,(SELECT part_id FROM parts WHERE part_id = 4), 1),
 	((SELECT customer_id FROM customers WHERE customer_id = 1), 'F76S9866EC78D89',(SELECT mechanic_id FROM mechanic WHERE mechanic_id = 1), 'put in a new carburetor', 245.65,(SELECT part_id FROM parts WHERE part_id = 1), 1);
@@ -202,4 +204,15 @@ $$
 
 CALL add_sales('John', 'Travolta', 'jtravolta@dealership.com');
 
---Stored Procedure #2 
+--Stored Procedure remove car from inventory
+CREATE OR REPLACE PROCEDURE add_inventory(
+	vin_number_ VARCHAR(100), year__ INTEGER, make_ VARCHAR(50), model_ VARCHAR(50), miles_ INTEGER, used_or_new_ VARCHAR(4), amount_ NUMERIC(10,2))
+LANGUAGE plpgsql
+AS $$
+BEGIN
+	INSERT INTO car_inventory(vin_number, year_, make, model, miles, used_or_new, amount)
+	VALUES (vin_number_, year__, make_, model_, miles_, used_or_new_, amount_);
+END;
+$$;
+
+CALL add_inventory ('F78J236HG5624F6', 2020, 'Toyota', 'Camry', 2525, 'NEW', 22,995.99);
